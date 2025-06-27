@@ -94,7 +94,7 @@ python cliente.py
 ## 🔐 Seguridad
 
 - Las contraseñas se almacenan **hasheadas** (no en texto plano)
-- La API se accede solo por **HTTPS**
+- La API se accede solo por **HTTPS** (gracias a Render)
 - El endpoint `/tareas` requiere **autenticación básica**
 
 ---

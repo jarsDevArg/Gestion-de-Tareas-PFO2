@@ -2,7 +2,7 @@ import requests
 from getpass import getpass
 
 # Cambiá esta URL luego de subirlo a Render:
-BASE_URL = "https://tu-api.onrender.com"
+BASE_URL = "https://gestion-de-tareas-pfo2.onrender.com"
 
 def registrar():
     try:
