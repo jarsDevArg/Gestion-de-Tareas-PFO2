@@ -1,7 +1,7 @@
 import requests
 from getpass import getpass
 
-# Cambiá esta URL luego de subirlo a Render:
+
 BASE_URL = "https://gestion-de-tareas-pfo2.onrender.com"
 
 def registrar():
@@ -11,7 +11,11 @@ def registrar():
         datos = {"usuario": usuario, "contraseña": contraseña}
         r = requests.post(f"{BASE_URL}/registro", json=datos, timeout=5)
         r.raise_for_status()  # lanza error si hay código 4xx/5xx
-        print(r.json())
+        respuesta = r.json()
+        if "mensaje" in respuesta:
+            print(f"\n✅ {respuesta['mensaje']}")
+        else:
+            print(f"\n📄 Respuesta: {respuesta}")
     except requests.exceptions.ConnectionError:
         print("❌ Error: No se pudo conectar con el servidor.")
     except requests.exceptions.Timeout:
@@ -25,18 +29,25 @@ def iniciar_sesion():
     try:
         usuario = input("Usuario: ")
         contraseña = getpass("Contraseña: ")
-        r = requests.get(f"{BASE_URL}/tareas", auth=(usuario, contraseña), timeout=5)
+        datos = {"usuario": usuario, "contraseña": contraseña}
+        r = requests.post(f"{BASE_URL}/login", json=datos, timeout=5)
         r.raise_for_status()
-        print("\nRespuesta del servidor:")
-        print(r.text)
-    except requests.exceptions.ConnectionError:
-        print("❌ Error: No se pudo conectar con el servidor.")
-    except requests.exceptions.Timeout:
-        print("⏱️ Error: Tiempo de espera agotado.")
+        respuesta = r.json()
+        token = respuesta.get("token")
+        print(f"\n🔐 {respuesta['mensaje']}")
+
+        # Usar token para acceder a /tareas
+        headers = {"Authorization": f"Bearer {token}"}
+        r_tareas = requests.get(f"{BASE_URL}/tareas", headers=headers, timeout=5)
+        r_tareas.raise_for_status()
+        print("\n📄 Tareas:")
+        print(r_tareas.text)
+
     except requests.exceptions.HTTPError as err:
-        print(f"❌ Error HTTP: {err.response.status_code} - {err.response.text}")
+        print(f"❌ Error: {err.response.status_code} - {err.response.text}")
     except Exception as e:
         print(f"❌ Error inesperado: {e}")
+
 
 if __name__ == "__main__":
     while True:

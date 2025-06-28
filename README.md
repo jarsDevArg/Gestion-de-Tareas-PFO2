@@ -99,6 +99,21 @@ python cliente.py
 
 ---
 
+### ¿Por qué hashear contraseñas?
+
+Para proteger las contraseñas en caso de robo de la base de datos. El hash es irreversible y evita que un atacante conozca la contraseña original.
+
+---
+
+### Ventajas de usar SQLite en este proyecto
+
+- No requiere instalación ni configuración.
+- Viene con Python (`sqlite3`).
+- Ideal para proyectos pequeños y prototipos.
+- Guarda datos de forma persistente en un archivo local.
+
+
+
 ## 🧑‍💻 Autor
 
-Proyecto desarrollado por Javier Rodríguez para prácticas de backend con Flask, SQLite y APIs RESTful.
+Proyecto desarrollado por Javier Rodríguez para la materia "Programación sobre redes" con Flask y SQLite.

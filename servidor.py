@@ -2,10 +2,11 @@ from flask import Flask, request, jsonify, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 import os
+import uuid
 
 app = Flask(__name__)
 DATABASE = 'tareas.db'
-
+sesiones = {}
 
 def crear_tabla_usuarios():
     with sqlite3.connect(DATABASE) as conn:
@@ -52,37 +53,36 @@ def login():
         resultado = cursor.fetchone()
 
         if resultado and check_password_hash(resultado[0], contraseña):
-            return jsonify({"mensaje": "Login exitoso"}), 200
+            token = str(uuid.uuid4())
+            sesiones[usuario] = token
+            return jsonify({"mensaje": "Login exitoso", "token": token}), 200
         else:
             return jsonify({"error": "Credenciales inválidas"}), 401
 
 
 @app.route('/tareas', methods=['GET'])
 def tareas():
-    auth = request.authorization
-    if not auth:
-        return make_response("Se requiere autenticación básica", 401, {"WWW-Authenticate": "Basic realm='Login'"})
+    token = request.headers.get("Authorization")
+    if not token or not token.startswith("Bearer "):
+        return jsonify({"error": "Token no proporcionado"}), 401
 
-    usuario = auth.username
-    contraseña = auth.password
+    token_valor = token.split(" ")[1]
+    # Buscamos si el token pertenece a un usuario
+    usuario = next((u for u, t in sesiones.items() if t == token_valor), None)
 
-    with sqlite3.connect(DATABASE) as conn:
-        cursor = conn.cursor()
-        cursor.execute("SELECT contraseña FROM usuarios WHERE usuario = ?", (usuario,))
-        resultado = cursor.fetchone()
+    if usuario:
+        html = f"""
+            <html>
+                <body>
+                    <h1>Bienvenido, {usuario}</h1>
+                    <p>Aquí puedes gestionar tus tareas.</p>
+                </body>
+            </html>
+        """
+        return html
+    else:
+        return jsonify({"error": "Token inválido o expirado"}), 403
 
-        if resultado and check_password_hash(resultado[0], contraseña):
-            html = f"""
-                <html>
-                    <body>
-                        <h1>Bienvenido, {usuario}</h1>
-                        <p>Aquí puedes gestionar tus tareas.</p>
-                    </body>
-                </html>
-            """
-            return html
-        else:
-            return make_response("Credenciales inválidas", 401, {"WWW-Authenticate": "Basic realm='Login'"})
 
 
 if __name__ == '__main__':
