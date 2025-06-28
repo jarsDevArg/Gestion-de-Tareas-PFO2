@@ -10,8 +10,8 @@ La API está desplegada en **Render** y cuenta con HTTPS habilitado automáticam
 
 La API está hosteada en Render en esta URL:
 
-👉 **https://tu-api.onrender.com**  
-(Reemplazá `tu-api` con tu subdominio real)
+👉 **https://gestion-de-tareas-pfo2.onrender.com**  
+
 
 ---
 
@@ -20,12 +20,12 @@ La API está hosteada en Render en esta URL:
 ### 1. Registro de usuarios
 - **Endpoint:** `POST /registro`
 - **Cuerpo JSON:**  
-\`\`\`json
+json
 {
   "usuario": "ejemplo",
   "contraseña": "1234"
 }
-\`\`\`
+
 
 ### 2. Inicio de sesión
 - **Endpoint:** `POST /login`
@@ -50,22 +50,18 @@ Este cliente permite interactuar con la API desde la terminal.
 ### ▶️ Cómo usar el cliente
 
 1. Cloná el repositorio o descargá los archivos.
-2. Asegurate de tener `cliente.py` y modificá la URL base si es necesario:
-\`\`\`python
-BASE_URL = "https://tu-api.onrender.com"
-\`\`\`
-
+2. Asegurate de tener `cliente.py`.
 3. Ejecutá el cliente:
-\`\`\`bash
+bash
 python cliente.py
-\`\`\`
+
 
 4. Elegí una de las opciones:
-\`\`\`text
+text
 1. Registrar usuario
 2. Iniciar sesión y ver tareas
 3. Salir
-\`\`\`
+
 
 > 🛡️ El inicio de sesión utiliza autenticación básica para acceder a la vista HTML `/tareas`.
 
